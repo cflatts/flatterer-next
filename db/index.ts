@@ -37,12 +37,11 @@ export async function createUser(u: IUser): Promise<IUser> {
 //     });
 // };
 
-export function findUser(u: { userHandle: any; }) {
-    User.findOne({userHandle: u.userHandle}, (err: any, resp: any) => {
-        console.log("RESP", resp);
-        console.log("ERROR", err);
-        return resp;
-    });
+export async function findUserForUniquenessCheck(u: any) {
+    const key = Object.keys(u)[0];
+    const findKey = key === "create_user_email_input" ? "email" : "userHandle";
+
+    return await User.findOne({ [findKey]: u[key] });
 };
 
 /**

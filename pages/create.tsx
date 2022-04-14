@@ -13,14 +13,36 @@ const CreateUser: NextPage = () => {
         create_user_password_confirmation_input: ""
     });
 
+    const [userHandleUnique, setHandleUniqueness] = useState(true);
+    const [emailUnique, setEmailUnique] = useState(true);
+
     function handleFormChange(evt: any) {
+        evt.preventDefault();
+
         const name = evt.target.name;
         const value = evt.target.value;
+
         setFormState((prevState) => ({
             ...prevState,
             [name]: value,
         }));
+
+        const validateData = {
+            [name]: value
+        }
+        fetch("/api/validate/user", {
+            method: "POST",
+            body: JSON.stringify(validateData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(resp => resp.json())
+        .then(resp => {
+            evt.target.name === "create_user_email_input" ? setEmailUnique(resp.data.unique) : setHandleUniqueness(resp.data.uniq);
+        }).catch(err => console.error(`UI ERR: ${err}`))
     };
+
     
     function handleCreateUserSubmission(evt: SyntheticEvent) {
         evt.preventDefault();
