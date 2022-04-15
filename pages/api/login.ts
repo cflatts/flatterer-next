@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { combineLatest, map } from "rxjs";
 import db from "../../db";
 
 type ReturnMessage = {
@@ -13,18 +14,28 @@ export default function handler(
 ) {
     db.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
 
-    return db.findUserForLoginCheck(req.body)
-        .then(resp => {
+    return combineLatest([
+        db.findUserForLoginCheck("email", req.body),
+        db.findUserForLoginCheck("userHandle", req.body)
+    ])
+    .pipe(map(resp => {
+        const user = resp.filter(check => check);
+        return !!user.length;
+    }))
+    .subscribe({
+        next: (resp) => {
             res.status(res.statusCode).json({
                 message: "The login validation status.",
                 data: {
-                    valid: !!resp
+                    valid: resp
                 }
             });
-        }).catch(err => {
+        },
+        error: (err) => {
             res.status(res.statusCode).json({
                 message: "The server handler failed",
                 error: err
             })
-        })
+        }
+    });
 }

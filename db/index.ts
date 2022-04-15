@@ -9,8 +9,8 @@ class DB {
         return await User.create(u);
     };
 
-    async findUserForLoginCheck(u: any) {
-        return await User.findOne({email: u.login_identifier_input, password: u.login_password_input})
+    async findUserForLoginCheck(key: string, u: any) {
+        return await User.findOne({[key]: u.login_identifier_input, password: u.login_password_input})
     }
 
     async findUserForUniquenessCheck(u: any) {
