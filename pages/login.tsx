@@ -5,14 +5,14 @@ import styles from "../styles/Login.module.css";
 const Login: NextPage = () => {
 
     const [formState, setFormState] = useState({
-        create_user_email_input: "",
-        create_user_handle_input: "",
-        create_user_password_input: "",
+        login_identifier_input: "",
+        login_password_input: "",
     });
 
     function handleFormChange(evt: any) {
         const name = evt.target.name;
         const value = evt.target.value;
+
         setFormState((prevState) => ({
             ...prevState,
             [name]: value,
@@ -21,7 +21,21 @@ const Login: NextPage = () => {
 
     function handleUserLoginSubmission(evt: SyntheticEvent) {
         evt.preventDefault();
-    }
+
+        fetch("/api/login", {
+            method: "POST",
+            body: JSON.stringify(formState),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(resp => {
+            return resp.json();
+        })
+        .then(resp => {
+            console.log("UI RESP", resp);
+        })
+        .catch(err => console.error(`UI ERR: ${err}`))
+    };
     
     return(
         <form className={styles.login_form} name="user_login_form" onSubmit={handleUserLoginSubmission}>
@@ -29,6 +43,7 @@ const Login: NextPage = () => {
                 <input
                     className="login_identifier_input"
                     name="login_identifier_input"
+                    value={formState.login_identifier_input}
                     type="text"
                     placeholder="Enter your email or user handle"
                     onChange={handleFormChange}
@@ -39,6 +54,7 @@ const Login: NextPage = () => {
                 <input
                     className="login_password_input"
                     name="login_password_input"
+                    value={formState.login_password_input}
                     type="password"
                     placeholder="Password"
                     onChange={handleFormChange}

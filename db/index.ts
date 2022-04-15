@@ -44,6 +44,10 @@ export async function findUserForUniquenessCheck(u: any) {
     return await User.findOne({ [findKey]: u[key] });
 };
 
+export async function findUserForLoginCheck(u: any) {
+    return await User.findOne({email: u.login_identifier_input, password: u.login_password_input})
+}
+
 /**
  * UPDATE FUNCTIONS
  */

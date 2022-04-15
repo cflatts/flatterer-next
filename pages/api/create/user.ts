@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { closeDbConnection, connectToDb, createUser } from "../../../db/index";
+import { connectToDb, createUser } from "../../../db/index";
 
 type ReturnMessage = {
     message: string;
-    error?: string;
     data?: any;
+    error?: string;
 };
 
 export default function handler(
