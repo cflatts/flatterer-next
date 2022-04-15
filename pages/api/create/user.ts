@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { connectToDb, createUser } from "../../../db/index";
+import db from "../../../db/index";
 
 type ReturnMessage = {
     message: string;
@@ -11,9 +11,9 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<ReturnMessage>
 ) {
-    connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
+    db.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
     
-    return createUser(req.body)
+    return db.createUser(req.body)
         .then((resp) => {
             const parsedData = {
                 userHandle: resp.userHandle,
