@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { connectToDb, findUserForUniquenessCheck } from "../../../db/index";
+import db from "../../../db/index";
 
 type ReturnMessage = {
     message: string;
@@ -11,9 +11,9 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<ReturnMessage>
 ) {
-    connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
+    db.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
     let uniqueness: boolean = true;
-    return findUserForUniquenessCheck(req.body)
+    return db.findUserForUniquenessCheck(req.body)
         .then((resp) => {
             if(resp) {
                 uniqueness = false;

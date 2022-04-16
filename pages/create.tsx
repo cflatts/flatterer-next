@@ -47,7 +47,7 @@ const CreateUser: NextPage = () => {
     function handleCreateUserSubmission(evt: SyntheticEvent) {
         evt.preventDefault();
 
-        let requestParams: IUser = {
+        let requestParams = {
             userHandle: formState.create_user_handle_input,
             nickname: formState.create_user_nickname_input,
             email: formState.create_user_email_input,

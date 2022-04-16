@@ -5,24 +5,28 @@ import User, { IUser } from "./models/user";
 class DB {
     constructor(){}
 
-    async createUser(u: IUser): Promise<IUser> {
-        return await User.create(u);
+    createUser(u: IUser): Promise<IUser> {
+        return User.create(u);
     };
 
-    async findUserForLoginCheck(key: string, u: any) {
-        return await User.findOne({[key]: u.login_identifier_input, password: u.login_password_input})
+    findUserForLoginCheck(key: string, u: any) {
+        return User.findOne({[key]: u.login_identifier_input, password: u.login_password_input})
     }
 
-    async findUserForUniquenessCheck(u: any) {
+    findUserForUniquenessCheck(u: any) {
         const key = Object.keys(u)[0];
         const findKey = key === "create_user_email_input" ? "email" : "userHandle";
     
-        return await User.findOne({ [findKey]: u[key] });
+        return User.findOne({ [findKey]: u[key] });
     };
 
-    async connectToDb(db: string) {
+    followUser(follower: string, followee: any) {
+        return User.updateOne({ userHandle: followee.userHandle }, followee.followers.unshift(follower))
+    }
+
+    connectToDb(db: string) {
         console.log(`SUCCESSFUL DB CONNECTION via: ${db}`);
-        return await mongoose.connect(db);
+        return mongoose.connect(db);
     };
 }
 
