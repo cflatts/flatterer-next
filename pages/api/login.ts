@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import db from "../../db";
+import unauthenticatedSessionDB from "../../db/unauthenticated";
 
 type ReturnMessage = {
     message: string;
@@ -11,9 +11,9 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<ReturnMessage>
 ) {
-    db.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
+    unauthenticatedSessionDB.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
 
-    return db.findUserForLoginCheck(req.body)
+    return unauthenticatedSessionDB.findUserForLoginCheck(req.body)
         .then(resp => {
             if(resp.length) {
                 const user = resp[0];

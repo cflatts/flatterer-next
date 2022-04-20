@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User, { IUser } from "./models/user";
 
 
-class DB {
+class UnauthenticatedSessionDB {
     constructor(){}
 
     createUser(u: IUser): Promise<IUser> {
@@ -30,5 +30,5 @@ class DB {
     };
 }
 
-const db = new DB();
-export default db;
+const unauthenticatedSessionDB = new UnauthenticatedSessionDB();
+export default unauthenticatedSessionDB;

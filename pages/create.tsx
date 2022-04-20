@@ -19,8 +19,8 @@ const CreateUser: NextPage = () => {
     function handleFormChange(evt: any) {
         evt.preventDefault();
 
-        const name = evt.target.name;
-        const value = evt.target.value;
+        const name: string = evt.target.name;
+        const value: string = evt.target.value;
 
         setFormState((prevState) => ({
             ...prevState,
@@ -30,17 +30,22 @@ const CreateUser: NextPage = () => {
         const validateData = {
             [name]: value
         }
-        fetch("/api/validate/user", {
-            method: "POST",
-            body: JSON.stringify(validateData),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(resp => resp.json())
-        .then(resp => {
-            evt.target.name === "create_user_email_input" ? setEmailUnique(resp.data.unique) : setHandleUniqueness(resp.data.uniq);
-        }).catch(err => console.error(`UI ERR: ${err}`))
+
+        if(name === "create_user_email_input" || name === "create_user_handle_input") {
+
+            fetch("/api/validate/user", {
+                method: "POST",
+                body: JSON.stringify(validateData),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(resp => resp.json())
+            .then(resp => {
+                evt.target.name === "create_user_email_input" ? setEmailUnique(resp.data.unique) : setHandleUniqueness(resp.data.uniq);
+            }).catch(err => console.error(`UI ERR: ${err}`));
+
+        };
     };
 
     
