@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User, { IUser } from "./models/user";
+import User from "./models/user";
 
 
 class AuthenticatedSessionDB {

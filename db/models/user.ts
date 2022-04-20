@@ -12,6 +12,7 @@ export interface IUser {
     followers: string[],
     blocked: string[],
     allowsFollowers: boolean,
+    isLoggedIn: boolean,
 };
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -22,7 +23,8 @@ const userSchema = new mongoose.Schema<IUser>({
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     blocked: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    allowsFollowers: { type: Boolean }
+    allowsFollowers: { type: Boolean, default: true },
+    isLoggedIn: { type: Boolean, default: false }
 }, {
     timestamps: true,
 });

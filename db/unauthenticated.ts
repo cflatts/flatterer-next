@@ -20,10 +20,6 @@ class UnauthenticatedSessionDB {
         return User.findOne({ [findKey]: u[key] });
     };
 
-    followUser(follower: string, followee: any) {
-        return User.updateOne({ userHandle: followee.userHandle }, followee.followers.unshift(follower));
-    }
-
     connectToDb(db: string) {
         console.log(`SUCCESSFUL DB CONNECTION via: ${db}`);
         return mongoose.connect(db);
