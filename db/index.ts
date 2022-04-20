@@ -9,9 +9,9 @@ class DB {
         return User.create(u);
     };
 
-    findUserForLoginCheck(key: string, u: any) {
-        return User.findOne({[key]: u.login_identifier_input, password: u.login_password_input})
-    }
+    findUserForLoginCheck(u: any): mongoose.Query<any, typeof User> {
+        return User.find().or([{email: u.login_identifier_input}, {userHandle: u.login_identifier_input}]);
+    };
 
     findUserForUniquenessCheck(u: any) {
         const key = Object.keys(u)[0];
@@ -21,7 +21,7 @@ class DB {
     };
 
     followUser(follower: string, followee: any) {
-        return User.updateOne({ userHandle: followee.userHandle }, followee.followers.unshift(follower))
+        return User.updateOne({ userHandle: followee.userHandle }, followee.followers.unshift(follower));
     }
 
     connectToDb(db: string) {

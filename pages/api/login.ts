@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { combineLatest, map } from "rxjs";
 import db from "../../db";
 
 type ReturnMessage = {
     message: string;
-    error?: string;
+    error?: Error;
     data?: any;
 };
 
@@ -14,28 +13,39 @@ export default function handler(
 ) {
     db.connectToDb(`${process.env.DB_HOST}/${process.env.DB_NAME}`).catch(err => res.status(500).json({ message: "Failed to connect to database", error: err }));
 
-    return combineLatest([
-        db.findUserForLoginCheck("email", req.body),
-        db.findUserForLoginCheck("userHandle", req.body)
-    ])
-    .pipe(map(resp => {
-        const user = resp.filter(check => check);
-        return !!user.length;
-    }))
-    .subscribe({
-        next: (resp) => {
-            res.status(res.statusCode).json({
-                message: "The login validation status.",
-                data: {
-                    valid: resp
-                }
-            });
-        },
-        error: (err) => {
-            res.status(res.statusCode).json({
-                message: "The server handler failed",
+    return db.findUserForLoginCheck(req.body)
+        .then(resp => {
+            if(resp.length) {
+                const user = resp[0];
+
+                user.comparePasswords(req.body.login_password_input, function(err: Error | undefined, isMatch: boolean) {
+                    if(err) {
+                        res.status(res.statusCode).json({
+                            message: "The compare password function failed.",
+                            error: err
+                        });
+                    };
+    
+                    res.status(res.statusCode).json({
+                        message: "The login validation status.",
+                        data: {
+                            valid: isMatch
+                        }
+                    });
+                });
+            } else {
+                res.status(res.statusCode).json({
+                    message: "The login validation status.",
+                    data: {
+                        valid: false,
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            res.status(400).json({
+                message: "The server handler failed.",
                 error: err
-            })
-        }
-    });
-}
+            });
+        });
+};
