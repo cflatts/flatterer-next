@@ -41,6 +41,7 @@ async function handler(
                             valid: isMatch
                         }
                     });
+                    // res.redirect(res.statusCode, "/profile");
                 });
             } else {
                 res.status(res.statusCode).json({

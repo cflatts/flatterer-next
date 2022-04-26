@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import { SyntheticEvent, useState } from "react";
 import styles from "../styles/Login.module.css";
 
 const Login: NextPage = () => {
-
+    const router = useRouter();
     const [formState, setFormState] = useState({
         login_identifier_input: "",
         login_password_input: "",
@@ -32,7 +33,9 @@ const Login: NextPage = () => {
             return resp.json();
         })
         .then(resp => {
-            console.log("UI RESP", resp);
+            if(resp.data.valid) {
+                router.push("/profile");
+            }
         })
         .catch(err => console.error(`UI ERR: ${err}`))
     };

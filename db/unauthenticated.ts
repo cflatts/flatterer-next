@@ -21,7 +21,7 @@ class UnauthenticatedSessionDB {
     };
 
     connectToDb(db: string) {
-        console.log(`SUCCESSFUL DB CONNECTION via: ${db}`);
+        console.log(`UNSECURE DB CONNECTION via: ${db}`);
         return mongoose.connect(db);
     };
 }
